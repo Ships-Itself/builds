@@ -1,0 +1,13 @@
+ticket_id,customer,subject,body
+T-01,Rina K.,Refund window,"Hi, I bought the Pro plan 6 days ago and it's not for me. Can I get my money back?"
+T-02,Marco D.,Invoice copy,"I need a copy of my March invoice for bookkeeping. Where do I find it?"
+T-03,Ayesha P.,Password reset loop,"The reset email never arrives. I checked spam. Using Gmail."
+T-04,Tom W.,Cancel subscription,"How do I cancel? I can't find the button anywhere."
+T-05,Lena S.,API rate limits,"What are the rate limits on the Starter plan API?"
+T-06,Yosef B.,Data export,"Can I export all my data before I decide whether to stay?"
+T-07,Grace N.,Team seats,"If I add 3 teammates mid-month, how am I billed for them?"
+T-08,Omar F.,GDPR question,"Where is my data stored and are you GDPR compliant?"
+T-09,Jill T.,Angry escalation,"This is the THIRD time your sync ate my changes. I want to talk to a human. Now."
+T-10,Chen L.,Student discount,"Do you offer student pricing? I'm doing my thesis."
+T-11,Piotr Z.,SSO setup,"We need SAML SSO for our team. Which plan includes it and how do I set it up?"
+T-12,Dana R.,Feature request,"Any plans for a dark mode? Half my team works nights."

@@ -1,0 +1,49 @@
+{
+  "name": "Support Agent (ep03)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b3000000-0000-4000-8000-000000000001",
+      "name": "Run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Load the tickets and the knowledge base. One item out per ticket.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP03_DIR;\nconst faq = fs.readFileSync(path.join(base, 'data', 'faq.md'), 'utf8');\nconst raw = fs.readFileSync(path.join(base, 'data', 'tickets.csv'), 'utf8');\nconst [header, ...lines] = raw.trim().split('\\n');\nreturn lines.map((line) => {\n  const m = line.match(/^([^,]+),([^,]+),([^,]+),\"(.*)\"$/);\n  return { json: { ticket_id: m[1], customer: m[2], subject: m[3], body: m[4], faq } };\n});"
+      },
+      "id": "b3000000-0000-4000-8000-000000000002",
+      "name": "Load tickets + knowledge",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ask the model. It may ONLY answer from the knowledge base, and it must\n// cite which entry it used — no citation, no answer.\nconst https = require('https');\n\nconst ask = (payload) => new Promise((resolve, reject) => {\n  const body = JSON.stringify(payload);\n  const req = https.request({\n    hostname: 'fal.run', path: '/fal-ai/any-llm', method: 'POST',\n    headers: {\n      'Authorization': 'Key ' + $env.FAL_KEY,\n      'Content-Type': 'application/json',\n      'Content-Length': Buffer.byteLength(body),\n    },\n  }, (res) => {\n    let data = '';\n    res.on('data', (c) => (data += c));\n    res.on('end', () => resolve(JSON.parse(data)));\n  });\n  req.on('error', reject);\n  req.write(body);\n  req.end();\n});\n\nconst out = [];\nfor (const item of $input.all()) {\n  const t = item.json;\n  const res = await ask({\n    model: 'meta-llama/llama-4-scout',\n    system_prompt:\n      'You are a support agent. Answer ONLY from the knowledge base. ' +\n      'Reply as JSON: {\"citation\": \"<TAG or NONE>\", \"answer\": \"<reply or ESCALATE>\"}. ' +\n      'If no knowledge-base entry answers the ticket, citation must be NONE and answer ESCALATE.\\n\\n' +\n      'KNOWLEDGE BASE:\\n' + t.faq,\n    prompt: 'TICKET from ' + t.customer + ' (' + t.subject + '): ' + t.body,\n  });\n  let verdict;\n  try { verdict = JSON.parse((res.output ?? '').replace(/```json|```/g, '').trim()); }\n  catch { verdict = { citation: 'NONE', answer: 'ESCALATE' }; }\n  out.push({ json: { ticket_id: t.ticket_id, customer: t.customer, subject: t.subject, ...verdict } });\n}\nreturn out;"
+      },
+      "id": "b3000000-0000-4000-8000-000000000003",
+      "name": "Agent: answer or escalate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The gate, and the receipts. No citation = a human gets the ticket.\nconst fs = require('fs');\nconst path = require('path');\nconst dir = path.join($env.EP03_DIR, 'out');\nfs.mkdirSync(dir, { recursive: true });\n\nconst answered = [];\nconst escalated = [];\nfor (const { json: r } of $input.all()) {\n  const ok = r.citation && r.citation !== 'NONE' && r.answer !== 'ESCALATE';\n  (ok ? answered : escalated).push(r);\n}\nfs.writeFileSync(path.join(dir, 'answered.json'), JSON.stringify(answered, null, 2));\nfs.writeFileSync(path.join(dir, 'escalated.json'), JSON.stringify(escalated, null, 2));\nconst summary = {\n  tickets: answered.length + escalated.length,\n  answered: answered.length,\n  escalated: escalated.length,\n  rate: Math.round((answered.length / (answered.length + escalated.length)) * 100) + '%',\n};\nfs.writeFileSync(path.join(dir, 'summary.json'), JSON.stringify(summary, null, 2));\nreturn [{ json: summary }];"
+      },
+      "id": "b3000000-0000-4000-8000-000000000004",
+      "name": "Gate + receipts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 300]
+    }
+  ],
+  "connections": {
+    "Run": { "main": [[{ "node": "Load tickets + knowledge", "type": "main", "index": 0 }]] },
+    "Load tickets + knowledge": { "main": [[{ "node": "Agent: answer or escalate", "type": "main", "index": 0 }]] },
+    "Agent: answer or escalate": { "main": [[{ "node": "Gate + receipts", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -8,5 +8,6 @@ episode. If it appeared on screen, it's here.
 |---|---|---|
 | EP01 | I Replaced a $1,242/Year Zapier Stack With One Free Workflow | [ep01-zapier-stack-replacement](ep01-zapier-stack-replacement/) |
 | EP02 | n8n vs Make vs Zapier: One Job, Three Stopwatches | [ep02-three-stopwatches](ep02-three-stopwatches/) |
+| EP03 | The Support Agent — No Citation, No Answer | [ep03-support-agent](ep03-support-agent/) |
 
 New builds land here every Tuesday and Friday.
