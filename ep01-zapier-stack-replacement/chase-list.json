@@ -1,0 +1,58 @@
+[
+  {
+    "invoice_id": "INV-1001-202607",
+    "client": "Meridian Web Studio",
+    "email": "accounts@meridianws.example",
+    "amount": 2400,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1002-202607",
+    "client": "Harbor & Finch",
+    "email": "billing@harborfinch.example",
+    "amount": 1150,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1004-202607",
+    "client": "Lantern Legal",
+    "email": "office@lanternlegal.example",
+    "amount": 1733.33,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1006-202608",
+    "client": "Northgate Dental",
+    "email": "admin@northgatedental.example",
+    "amount": 780,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1007-202607",
+    "client": "Fjord Analytics",
+    "email": "ap@fjordanalytics.example",
+    "amount": 4400,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1009-202608",
+    "client": "Brightline Tutoring",
+    "email": "ops@brightline.example",
+    "amount": 1900,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1010-202607",
+    "client": "Summit Roofing Co",
+    "email": "billing@summitroof.example",
+    "amount": 3100,
+    "chase_after": "2026-08-19"
+  },
+  {
+    "invoice_id": "INV-1012-202608",
+    "client": "Quarry Coffee Roasters",
+    "email": "finance@quarrycoffee.example",
+    "amount": 1275,
+    "chase_after": "2026-08-19"
+  }
+]

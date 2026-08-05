@@ -1,0 +1,13 @@
+deal_id,client,email,status,amount_usd,close_date,billing_cycle
+D-1001,Meridian Web Studio,accounts@meridianws.example,won,2400,2026-07-28,monthly
+D-1002,Harbor & Finch,billing@harborfinch.example,won,1150,2026-07-30,monthly
+D-1003,Cobalt Fitness,pay@cobaltfit.example,negotiation,3600,,quarterly
+D-1004,Lantern Legal,office@lanternlegal.example,won,5200,2026-07-25,quarterly
+D-1005,Petal & Stem Florists,hello@petalstem.example,lost,900,,monthly
+D-1006,Northgate Dental,admin@northgatedental.example,won,780,2026-08-01,monthly
+D-1007,Fjord Analytics,ap@fjordanalytics.example,won,4400,2026-07-29,monthly
+D-1008,Copper Kettle Cafe,owner@copperkettle.example,proposal,650,,monthly
+D-1009,Brightline Tutoring,ops@brightline.example,won,1900,2026-08-02,monthly
+D-1010,Summit Roofing Co,billing@summitroof.example,won,3100,2026-07-31,one_time
+D-1011,Velvet Antler Design,studio@velvetantler.example,negotiation,2750,,monthly
+D-1012,Quarry Coffee Roasters,finance@quarrycoffee.example,won,1275,2026-08-03,monthly
