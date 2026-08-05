@@ -1,0 +1,49 @@
+{
+  "name": "CRM → Invoices (ep01)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Read the CRM export. In production this node is a webhook or a\n// scheduled pull from the CRM's API — same shape, same downstream nodes.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP01_DIR;\nconst raw = fs.readFileSync(path.join(base, 'data', 'crm-export.csv'), 'utf8');\nconst [header, ...lines] = raw.trim().split('\\n');\nconst cols = header.split(',');\nreturn lines.map((line) => {\n  const vals = line.split(',');\n  const row = Object.fromEntries(cols.map((c, i) => [c, vals[i]]));\n  return { json: row };\n});"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Read CRM export",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keep only closed-won deals and price the invoice.\n// Quarterly deals bill a third per month; one-time bills in full.\nconst out = [];\nfor (const item of $input.all()) {\n  const d = item.json;\n  if (d.status !== 'won') continue;\n  const amount = Number(d.amount_usd);\n  const billed =\n    d.billing_cycle === 'quarterly' ? Math.round((amount / 3) * 100) / 100 :\n    amount;\n  out.push({\n    json: {\n      invoice_id: 'INV-' + d.deal_id.replace('D-', '') + '-' + d.close_date.replaceAll('-', '').slice(0, 6),\n      client: d.client,\n      email: d.email,\n      billed_usd: billed,\n      cycle: d.billing_cycle,\n      close_date: d.close_date,\n    },\n  });\n}\nreturn out;"
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Filter won + price",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Emit one invoice HTML per deal, plus a chase list and a run summary.\n// HTML instead of a PDF service: every browser prints HTML to PDF, and it\n// removes the paid dependency this workflow exists to replace.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP01_DIR;\nconst outDir = path.join(base, 'out');\nfs.mkdirSync(path.join(outDir, 'invoices'), { recursive: true });\n\nconst items = $input.all();\nconst today = '2026-08-05';\nlet total = 0;\n\nfor (const { json: inv } of items) {\n  total += inv.billed_usd;\n  const html = `<!doctype html><html><head><meta charset=\"utf-8\"><title>${inv.invoice_id}</title>\n<style>body{font:15px/1.5 -apple-system,sans-serif;max-width:640px;margin:48px auto;color:#111}\nh1{font-size:22px}table{width:100%;border-collapse:collapse;margin-top:24px}\ntd,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}\n.total{font-weight:700;font-size:18px}.muted{color:#666}</style></head><body>\n<h1>Invoice ${inv.invoice_id}</h1>\n<p class=\"muted\">Issued ${today} · due in 14 days</p>\n<p><strong>${inv.client}</strong><br>${inv.email}</p>\n<table><tr><th>Description</th><th>Amount</th></tr>\n<tr><td>Services — ${inv.cycle} billing (closed ${inv.close_date})</td><td>$${inv.billed_usd.toLocaleString('en-US')}</td></tr>\n<tr><td class=\"total\">Total due</td><td class=\"total\">$${inv.billed_usd.toLocaleString('en-US')}</td></tr></table>\n</body></html>`;\n  fs.writeFileSync(path.join(outDir, 'invoices', inv.invoice_id + '.html'), html);\n}\n\nconst chase = items.map(({ json: i }) => ({\n  invoice_id: i.invoice_id, client: i.client, email: i.email,\n  amount: i.billed_usd, chase_after: '2026-08-19',\n}));\nfs.writeFileSync(path.join(outDir, 'chase-list.json'), JSON.stringify(chase, null, 2));\n\nconst summary = {\n  run_date: today,\n  invoices_created: items.length,\n  total_billed_usd: Math.round(total * 100) / 100,\n};\nfs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));\nreturn [{ json: summary }];"
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "Write invoices + chase list",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Run": { "main": [[{ "node": "Read CRM export", "type": "main", "index": 0 }]] },
+    "Read CRM export": { "main": [[{ "node": "Filter won + price", "type": "main", "index": 0 }]] },
+    "Filter won + price": { "main": [[{ "node": "Write invoices + chase list", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
