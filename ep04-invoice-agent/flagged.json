@@ -1,0 +1,32 @@
+[
+  {
+    "file": "inv-11.png",
+    "vendor": "Cobalt Cloud Services",
+    "invoice_number": "CC-88977",
+    "invoice_date": "2026-08-03",
+    "total": 1306.8,
+    "currency": "USD",
+    "po_number": "PO-2091",
+    "flag": "AMOUNT MISMATCH — invoice $1306.8 vs PO $1188"
+  },
+  {
+    "file": "inv-12.png",
+    "vendor": "Sable Creative GmbH",
+    "invoice_number": "SC-2026-19",
+    "invoice_date": "2026-08-04",
+    "total": 980,
+    "currency": "USD",
+    "po_number": null,
+    "flag": "NO PO — nobody ordered this"
+  },
+  {
+    "file": "inv-13.png",
+    "vendor": "Fieldstone Office Supply",
+    "invoice_number": "INV-1447",
+    "invoice_date": "2026-07-29",
+    "total": 312.45,
+    "currency": "USD",
+    "po_number": "PO-2082",
+    "flag": "DUPLICATE — already processed INV-1447"
+  }
+]

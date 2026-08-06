@@ -1,0 +1,49 @@
+{
+  "name": "Invoice Reader (ep04)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b4000000-0000-4000-8000-000000000001",
+      "name": "Run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Load the invoice images and the purchase-order list. One item per invoice.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP04_DIR;\nconst pos = fs.readFileSync(path.join(base, 'data', 'purchase-orders.csv'), 'utf8')\n  .trim().split('\\n').slice(1).map((l) => {\n    const [po_number, vendor, amount] = l.split(',');\n    return { po_number, vendor, amount: Number(amount) };\n  });\nconst dir = path.join(base, 'data', 'invoices');\nreturn fs.readdirSync(dir).filter((f) => f.endsWith('.png')).sort().map((f) => ({\n  json: {\n    file: f,\n    image: 'data:image/png;base64,' + fs.readFileSync(path.join(dir, f)).toString('base64'),\n    pos,\n  },\n}));"
+      },
+      "id": "b4000000-0000-4000-8000-000000000002",
+      "name": "Load invoices + POs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// A vision model reads every invoice image into strict JSON.\n// If a field is not on the document, it must say null — never guess.\nconst https = require('https');\n\nconst read = (payload) => new Promise((resolve, reject) => {\n  const body = JSON.stringify(payload);\n  const req = https.request({\n    hostname: 'fal.run', path: '/fal-ai/any-llm/vision', method: 'POST',\n    headers: {\n      'Authorization': 'Key ' + $env.FAL_KEY,\n      'Content-Type': 'application/json',\n      'Content-Length': Buffer.byteLength(body),\n    },\n  }, (res) => {\n    let data = '';\n    res.on('data', (c) => (data += c));\n    res.on('end', () => resolve(JSON.parse(data)));\n  });\n  req.on('error', reject);\n  req.write(body);\n  req.end();\n});\n\nconst out = [];\nfor (const item of $input.all()) {\n  const t = item.json;\n  const res = await read({\n    model: 'google/gemini-flash-1.5',\n    system_prompt:\n      'You extract structured data from invoice images. Reply with ONLY JSON: ' +\n      '{\"vendor\": str, \"invoice_number\": str, \"invoice_date\": \"YYYY-MM-DD\", ' +\n      '\"total\": number, \"currency\": \"USD\"|..., \"po_number\": str|null}. ' +\n      'If a field is not on the document, use null. Never guess a PO number.',\n    prompt: 'Extract the fields from this invoice.',\n    image_url: t.image,\n  });\n  let fields;\n  try { fields = JSON.parse((res.output ?? '').replace(/```json|```/g, '').trim()); }\n  catch { fields = { vendor: null, invoice_number: null, total: null, po_number: null, unreadable: true }; }\n  out.push({ json: { file: t.file, pos: t.pos, ...fields } });\n}\nreturn out;"
+      },
+      "id": "b4000000-0000-4000-8000-000000000003",
+      "name": "Vision: read every invoice",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The gate. An invoice only gets approved if it matches a real PO,\n// to the cent, and hasn't been paid before. Everything else → a human.\nconst fs = require('fs');\nconst path = require('path');\nconst dir = path.join($env.EP04_DIR, 'out');\nfs.mkdirSync(dir, { recursive: true });\n\nconst seen = new Set();\nconst approved = [];\nconst flagged = [];\nfor (const { json: r } of $input.all()) {\n  const id = r.vendor + '|' + r.invoice_number;\n  const po = (r.pos ?? []).find((p) => p.po_number === r.po_number);\n  const flag =\n    r.unreadable ? 'UNREADABLE — human review' :\n    seen.has(id) ? 'DUPLICATE — already processed ' + r.invoice_number :\n    !r.po_number ? 'NO PO — nobody ordered this' :\n    !po ? 'UNKNOWN PO — ' + r.po_number + ' is not in the system' :\n    Math.abs(r.total - po.amount) > 0.01\n      ? 'AMOUNT MISMATCH — invoice $' + r.total + ' vs PO $' + po.amount :\n    null;\n  seen.add(id);\n  const { pos, image, ...rec } = r;\n  (flag ? flagged : approved).push(flag ? { ...rec, flag } : rec);\n}\nfs.writeFileSync(path.join(dir, 'approved.json'), JSON.stringify(approved, null, 2));\nfs.writeFileSync(path.join(dir, 'flagged.json'), JSON.stringify(flagged, null, 2));\nconst summary = {\n  invoices: approved.length + flagged.length,\n  approved: approved.length,\n  flagged: flagged.length,\n  approved_value: '$' + approved.reduce((n, a) => n + a.total, 0).toFixed(2),\n};\nfs.writeFileSync(path.join(dir, 'summary.json'), JSON.stringify(summary, null, 2));\nreturn [{ json: summary }];"
+      },
+      "id": "b4000000-0000-4000-8000-000000000004",
+      "name": "Reconcile + receipts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 300]
+    }
+  ],
+  "connections": {
+    "Run": { "main": [[{ "node": "Load invoices + POs", "type": "main", "index": 0 }]] },
+    "Load invoices + POs": { "main": [[{ "node": "Vision: read every invoice", "type": "main", "index": 0 }]] },
+    "Vision: read every invoice": { "main": [[{ "node": "Reconcile + receipts", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
