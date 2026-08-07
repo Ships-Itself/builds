@@ -1,0 +1,38 @@
+{
+  "name": "Agent Stress Run (ep05)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b5000000-0000-4000-8000-000000000001",
+      "name": "Run",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The same 12-ticket inbox from episode three, plus the knowledge base.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP03_DIR;\nconst faq = fs.readFileSync(path.join(base, 'data', 'faq.md'), 'utf8');\nconst raw = fs.readFileSync(path.join(base, 'data', 'tickets.csv'), 'utf8');\nconst [, ...lines] = raw.trim().split('\\n');\nreturn lines.map((line) => {\n  const m = line.match(/^([^,]+),([^,]+),([^,]+),\"(.*)\"$/);\n  return { json: { ticket_id: m[1], customer: m[2], subject: m[3], body: m[4], faq } };\n});"
+      },
+      "id": "b5000000-0000-4000-8000-000000000002",
+      "name": "Load the inbox",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The exact agent from episode three, wrapped in one loop:\n// 100 passes over the inbox = 1,200 real model calls. Receipts to disk.\nconst fs = require('fs');\nconst path = require('path');\nconst https = require('https');\n\nconst RUNS = Number($env.EP05_RUNS ?? 100);\nconst outDir = path.join($env.EP05_DIR, 'out');\nfs.mkdirSync(outDir, { recursive: true });\nconst tickets = $input.all().map((i) => i.json);\nconst faq = tickets[0].faq;\n\nconst ask = (payload) => new Promise((resolve, reject) => {\n  const body = JSON.stringify(payload);\n  const req = https.request({\n    hostname: 'fal.run', path: '/fal-ai/any-llm', method: 'POST',\n    headers: {\n      'Authorization': 'Key ' + $env.FAL_KEY,\n      'Content-Type': 'application/json',\n      'Content-Length': Buffer.byteLength(body),\n    },\n  }, (res) => {\n    let data = '';\n    res.on('data', (c) => (data += c));\n    res.on('end', () => resolve(JSON.parse(data)));\n  });\n  req.on('error', reject);\n  req.write(body);\n  req.end();\n});\n\nconst t0 = Date.now();\nconst perRun = [];\nlet calls = 0, failures = 0;\nfor (let r = 1; r <= RUNS; r++) {\n  let answered = 0, escalated = 0;\n  for (const t of tickets) {\n    let verdict;\n    try {\n      const res = await ask({\n        model: 'meta-llama/llama-4-scout',\n        system_prompt:\n          'You are a support agent. Answer ONLY from the knowledge base. ' +\n          'Reply as JSON: {\"citation\": \"<TAG or NONE>\", \"answer\": \"<reply or ESCALATE>\"}. ' +\n          'If no knowledge-base entry answers the ticket, citation must be NONE and answer ESCALATE.\\n\\n' +\n          'KNOWLEDGE BASE:\\n' + faq,\n        prompt: 'TICKET from ' + t.customer + ' (' + t.subject + '): ' + t.body,\n      });\n      calls++;\n      try { verdict = JSON.parse((res.output ?? '').replace(/```json|```/g, '').trim()); }\n      catch { verdict = { citation: 'NONE', answer: 'ESCALATE' }; }\n    } catch (err) {\n      failures++;\n      verdict = { citation: 'NONE', answer: 'ESCALATE' };\n    }\n    const ok = verdict.citation && verdict.citation !== 'NONE' && verdict.answer !== 'ESCALATE';\n    if (ok) answered++; else escalated++;\n  }\n  perRun.push({ run: r, answered, escalated });\n  if (r % 5 === 0) {\n    fs.writeFileSync(path.join(outDir, 'progress.json'), JSON.stringify({\n      done: r, of: RUNS, calls, failures, elapsed_s: Math.round((Date.now() - t0) / 1000),\n    }));\n  }\n}\n\nconst byAnswered = {};\nfor (const p of perRun) byAnswered[p.answered] = (byAnswered[p.answered] ?? 0) + 1;\nconst summary = {\n  runs: RUNS,\n  tickets_per_run: tickets.length,\n  total_calls: calls,\n  network_failures: failures,\n  wall_seconds: Math.round((Date.now() - t0) / 1000),\n  answered_distribution: byAnswered,\n};\nfs.writeFileSync(path.join(outDir, 'per-run.json'), JSON.stringify(perRun, null, 2));\nfs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2));\nreturn [{ json: summary }];"
+      },
+      "id": "b5000000-0000-4000-8000-000000000003",
+      "name": "The agent, 100 times",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    }
+  ],
+  "connections": {
+    "Run": { "main": [[{ "node": "Load the inbox", "type": "main", "index": 0 }]] },
+    "Load the inbox": { "main": [[{ "node": "The agent, 100 times", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,502 @@
+[
+  {
+    "run": 1,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 2,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 3,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 4,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 5,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 6,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 7,
+    "answered": 8,
+    "escalated": 4
+  },
+  {
+    "run": 8,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 9,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 10,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 11,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 12,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 13,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 14,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 15,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 16,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 17,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 18,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 19,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 20,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 21,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 22,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 23,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 24,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 25,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 26,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 27,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 28,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 29,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 30,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 31,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 32,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 33,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 34,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 35,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 36,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 37,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 38,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 39,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 40,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 41,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 42,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 43,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 44,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 45,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 46,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 47,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 48,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 49,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 50,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 51,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 52,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 53,
+    "answered": 8,
+    "escalated": 4
+  },
+  {
+    "run": 54,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 55,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 56,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 57,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 58,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 59,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 60,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 61,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 62,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 63,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 64,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 65,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 66,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 67,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 68,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 69,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 70,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 71,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 72,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 73,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 74,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 75,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 76,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 77,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 78,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 79,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 80,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 81,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 82,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 83,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 84,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 85,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 86,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 87,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 88,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 89,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 90,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 91,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 92,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 93,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 94,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 95,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 96,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 97,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 98,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 99,
+    "answered": 9,
+    "escalated": 3
+  },
+  {
+    "run": 100,
+    "answered": 9,
+    "escalated": 3
+  }
+]

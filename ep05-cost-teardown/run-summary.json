@@ -1,0 +1,11 @@
+{
+  "runs": 100,
+  "tickets_per_run": 12,
+  "total_calls": 1200,
+  "network_failures": 0,
+  "wall_seconds": 924,
+  "answered_distribution": {
+    "8": 2,
+    "9": 98
+  }
+}
