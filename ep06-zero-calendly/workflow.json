@@ -1,0 +1,65 @@
+{
+  "name": "Zero-Dollar Booking Page (ep06)",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Book a call — Northgate Labs",
+        "formDescription": "30 minutes, no fluff. Pick a slot.",
+        "formFields": {
+          "values": [
+            { "fieldLabel": "Name", "placeholder": "Your name", "requiredField": true },
+            { "fieldLabel": "Email", "fieldType": "email", "requiredField": true },
+            { "fieldLabel": "Date", "fieldType": "date", "requiredField": true },
+            {
+              "fieldLabel": "Time",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  { "option": "09:00" }, { "option": "10:00" }, { "option": "11:00" },
+                  { "option": "13:00" }, { "option": "14:00" }, { "option": "15:00" }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b6000000-0000-4000-8000-000000000001",
+      "name": "Booking form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [220, 300],
+      "webhookId": "b6b00c11-2b1a-4c1d-9e21-000000000001"
+    },
+    {
+      "parameters": {
+        "jsCode": "// The gatekeeper — one code node instead of $10 a seat.\n// Free slot → book it, write a real calendar invite. Taken → say so.\nconst fs = require('fs');\nconst path = require('path');\nconst base = $env.EP06_DIR;\nconst file = path.join(base, 'data', 'bookings.csv');\nconst HOURS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];\n\nconst b = $input.first().json;\nconst name = b.Name;\nconst email = b.Email;\nconst time = b.Time;\nconst date = String(b.Date).slice(0, 10);\n\nconst rows = fs.readFileSync(file, 'utf8').trim().split('\\n').slice(1).map((l) => l.split(','));\nconst taken = rows.some(([d, t]) => d === date && t === time);\n\nif (!HOURS.includes(time)) {\n  return [{ json: { title: 'Outside working hours', message: 'Pick a time between 09:00 and 15:00.' } }];\n}\nif (taken) {\n  return [{ json: { title: 'That slot is already taken', message: date + ' at ' + time + ' is booked — go back and pick another slot.' } }];\n}\n\nconst raw = fs.readFileSync(file, 'utf8');\nfs.writeFileSync(file, raw.trimEnd() + '\\n' + [date, time, name, email].join(',') + '\\n');\n\nconst outDir = path.join(base, 'out');\nfs.mkdirSync(outDir, { recursive: true });\nconst dt = date.replace(/-/g, '') + 'T' + time.replace(':', '') + '00';\nconst ics = [\n  'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ships itself//booking//EN',\n  'BEGIN:VEVENT', 'UID:' + Date.now() + '@shipsitself', 'DTSTART:' + dt,\n  'DURATION:PT30M', 'SUMMARY:Call \\u2014 ' + name,\n  'DESCRIPTION:Booked via the zero-dollar page', 'END:VEVENT', 'END:VCALENDAR',\n].join('\\r\\n');\nfs.writeFileSync(path.join(outDir, 'booking-' + date + '-' + time.replace(':', '') + '.ics'), ics);\n\nreturn [{ json: { title: 'Booked: ' + date + ' at ' + time, message: 'Calendar invite written. See you there, ' + name + '.' } }];"
+      },
+      "id": "b6000000-0000-4000-8000-000000000002",
+      "name": "The gatekeeper",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "={{ $json.title }}",
+        "completionMessage": "={{ $json.message }}",
+        "options": {}
+      },
+      "id": "b6000000-0000-4000-8000-000000000003",
+      "name": "Confirmation page",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [660, 300],
+      "webhookId": "b6b00c11-2b1a-4c1d-9e21-000000000002"
+    }
+  ],
+  "connections": {
+    "Booking form": { "main": [[{ "node": "The gatekeeper", "type": "main", "index": 0 }]] },
+    "The gatekeeper": { "main": [[{ "node": "Confirmation page", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}
