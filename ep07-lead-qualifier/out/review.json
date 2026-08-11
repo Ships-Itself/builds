@@ -1,0 +1,29 @@
+[
+  {
+    "lead_id": "L-015",
+    "name": "Owen McCarthy",
+    "company": "Fieldnote Farms",
+    "verdict": "REVIEW",
+    "model_verdict": "REVIEW",
+    "tags": [
+      "ICP-1",
+      "ICP-5"
+    ],
+    "evidence": "size:30 role:founder budget:$900/mo timeline:6 weeks",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-013",
+    "name": "Alex Turner",
+    "company": "Turner Digital",
+    "verdict": "REVIEW",
+    "model_verdict": "REVIEW",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:2 industry:marketing budget:none",
+    "opener": "",
+    "reason": "clean"
+  }
+]

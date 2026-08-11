@@ -1,0 +1,238 @@
+[
+  {
+    "lead_id": "L-001",
+    "name": "Maya Chen",
+    "company": "Brightpath Commerce",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:85 industry:e-commerce budget:$1200/mo timeline:this month role:founder",
+    "opener": "Happy to help you automate returns and inventory syncs this month.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-002",
+    "name": "Tom Okafor",
+    "company": "Ledgerly",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:42 industry:SaaS budget:$800/mo timeline:6 weeks",
+    "opener": "Happy to map your billing and onboarding flows this week.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-003",
+    "name": "Sara Lindqvist",
+    "company": "Nordic Legal Partners",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:120 industry:professional services budget:$2000/mo timeline:2 months role:operations director",
+    "opener": "Great to discuss automating your intake and conflict checks, Sara.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-004",
+    "name": "Dev Patel",
+    "company": "CartWhiz",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:60 industry:e-commerce budget:$950/mo timeline:this quarter role:revenue lead",
+    "opener": "Great to discuss automating your abandoned-cart and support processes.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-005",
+    "name": "Anna Kovacs",
+    "company": "FlowMetric",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "company:FlowMetric role:founder size:35 industry:SaaS budget:$700/mo timeline:1 month",
+    "opener": "We can help you set up a seamless trial-to-paid process, shall we schedule a call?",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-006",
+    "name": "Jae Park",
+    "company": "Summit Accounting Group",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:200 industry:professional services budget:$1500/mo timeline:8 weeks role:managing partner",
+    "opener": "Happy to help streamline your document process.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-007",
+    "name": "Lena Fischer",
+    "company": "ShopHaven",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:150 industry:e-commerce budget:$600/mo timeline:2 months role:ops manager",
+    "opener": "Happy to help you streamline your supplier invoice reconciliation process.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-008",
+    "name": "Marcus Reid",
+    "company": "PipelineIQ",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:25 industry:SaaS budget:$500/mo timeline:this month role:founder",
+    "opener": "Happy to help streamline your lead routing this month.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-009",
+    "name": "Ines Duarte",
+    "company": "Meridian Design Co",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:48 industry:professional services budget:$850/mo timeline:6 weeks role:operations lead",
+    "opener": "Happy to map your billing flow this week.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-010",
+    "name": "Chris Novak",
+    "company": "StoreForge",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:300 industry:e-commerce budget:$3000/mo timeline:1 month role:revenue director",
+    "opener": "Great to discuss optimizing your post-purchase flows and refund process this week.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-012",
+    "name": "Sam Whitfield",
+    "company": "Archway SaaS",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-4"
+    ],
+    "evidence": "company:Archway SaaS role:product manager size:90 industry:SaaS budget:not sure yet timeline:3 months",
+    "opener": "Great to discuss scoping automation options for your support team, Sam.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-017",
+    "name": "Hugo Lindt",
+    "company": "Atelier North",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:12 industry:professional services budget:$500/mo timeline:3 months role:owner",
+    "opener": "Happy to help you automate client onboarding for your design studio.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-022",
+    "name": "Amelie Roux",
+    "company": "Studio Lumen",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:8 industry:professional services budget:$550/mo timeline:2 months role:founder",
+    "opener": "Happy to explore how workflow automation can streamline your photography studio.",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-040",
+    "name": "Grete Olsen",
+    "company": "Fjord Travel",
+    "verdict": "HOT",
+    "model_verdict": "HOT",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:95 industry:travel budget:$650/mo timeline:7 weeks role:ops lead",
+    "opener": "Happy to help streamline your booking process.",
+    "reason": "clean"
+  }
+]

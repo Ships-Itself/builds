@@ -1,0 +1,173 @@
+[
+  {
+    "lead_id": "L-025",
+    "name": "Ben Adler",
+    "company": "none",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-1",
+      "DQ-2"
+    ],
+    "evidence": "role:student size:1 budget:$0",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-026",
+    "name": "Chloe Martin",
+    "company": "Freelance",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:1 industry:design budget:none",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-028",
+    "name": "Viktor Duda",
+    "company": "LeadBlast Media",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:500 industry:marketing budget:n/a",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-029",
+    "name": "Tim Berry",
+    "company": "Berry Woodworks",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:2 industry:crafts budget:$50/mo",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-030",
+    "name": "Nina Sato",
+    "company": "none",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-1"
+    ],
+    "evidence": "role:student size:1",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-031",
+    "name": "Raj Malhotra",
+    "company": "GrowthHackrz",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:6 industry:marketing budget:rev-share only",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-032",
+    "name": "Emma Wolfe",
+    "company": "SEO Titans",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:40 industry:marketing budget:n/a",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-033",
+    "name": "Petr Havel",
+    "company": "none",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-1",
+      "DQ-2"
+    ],
+    "evidence": "role:hobbyist size:1 budget:$0",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-035",
+    "name": "Yara Haddad",
+    "company": "CampusReach",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:3 industry:education budget:none role:intern",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-036",
+    "name": "Leo Brandt",
+    "company": "Brandt Consulting",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:1 industry:consulting budget:client-pays",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-037",
+    "name": "Sophie Klein",
+    "company": "none",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-1"
+    ],
+    "evidence": "role:job seeker",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-027",
+    "name": "Charles Wentworth III",
+    "company": "Meridian Global Holdings",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-1"
+    ],
+    "evidence": "role:chairman",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-034",
+    "name": "Kate Miller",
+    "company": "Miller and Co",
+    "verdict": "DISQUALIFY",
+    "model_verdict": "DISQUALIFY",
+    "tags": [
+      "DQ-2"
+    ],
+    "evidence": "size:3",
+    "opener": "",
+    "reason": "clean"
+  }
+]

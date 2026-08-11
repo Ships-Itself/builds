@@ -1,0 +1,166 @@
+[
+  {
+    "lead_id": "L-011",
+    "name": "Rita Gomes",
+    "company": "Cobbleworks",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2"
+    ],
+    "evidence": "size:18 industry:e-commerce",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-014",
+    "name": "Talia Ben-Ami",
+    "company": "Harbor Analytics",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-5"
+    ],
+    "evidence": "role:ops lead size:55 industry:SaaS",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-016",
+    "name": "Priya Nair",
+    "company": "Cloudmason",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2"
+    ],
+    "evidence": "size:240 industry:SaaS",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-018",
+    "name": "Farah Aziz",
+    "company": "Quickstitch",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2"
+    ],
+    "evidence": "size:22 industry:e-commerce",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-019",
+    "name": "Nick Sorensen",
+    "company": "BrightBoard",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-2",
+      "ICP-3"
+    ],
+    "evidence": "industry:SaaS budget:$600/mo",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-020",
+    "name": "Elena Vasquez",
+    "company": "Casa Verde Imports",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4",
+      "ICP-5"
+    ],
+    "evidence": "size:70 industry:wholesale budget:$750/mo timeline:2 months role:operations lead",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-021",
+    "name": "George Han",
+    "company": "Parkside Clinics",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-3",
+      "ICP-4"
+    ],
+    "evidence": "size:110 industry:healthcare budget:$1000/mo timeline:6 weeks",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-023",
+    "name": "Dan Kim",
+    "company": "Redline Sports Gear",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3"
+    ],
+    "evidence": "size:45 industry:e-commerce budget:around $500",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-024",
+    "name": "Olga Petrov",
+    "company": "Vantage Recruiting",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-5"
+    ],
+    "evidence": "company:Vantage Recruiting role:director size:65 industry:professional services",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-038",
+    "name": "Noor Rahman",
+    "company": "Datawell",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-2",
+      "ICP-3",
+      "ICP-4"
+    ],
+    "evidence": "company:Datawell role:analyst size:150 industry:SaaS budget:maybe $600/mo timeline:3 months",
+    "opener": "",
+    "reason": "clean"
+  },
+  {
+    "lead_id": "L-039",
+    "name": "Paul Sims",
+    "company": "Simcraft Games",
+    "verdict": "NURTURE",
+    "model_verdict": "NURTURE",
+    "tags": [
+      "ICP-1",
+      "ICP-3",
+      "ICP-4"
+    ],
+    "evidence": "size:28 industry:gaming budget:$700/mo timeline:2 months",
+    "opener": "",
+    "reason": "clean"
+  }
+]
