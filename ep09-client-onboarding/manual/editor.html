@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>plainedit</title>
+<style>
+  :root { --bg:#1e1f24; --panel:#26272e; --line:#34363f; --text:#d7d9e0; --dim:#8b8e99; --accent:#4f9cf9; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--text); font:14px/1.5 "SF Mono", Menlo, monospace; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+  header { display:flex; align-items:center; gap:16px; padding:10px 16px; background:var(--panel); border-bottom:1px solid var(--line); }
+  header .app { color:var(--dim); font-size:12px; letter-spacing:1px; }
+  #filename { flex:1; background:var(--bg); border:1px solid var(--line); color:var(--text); padding:6px 10px; border-radius:6px; font:inherit; }
+  #save { background:var(--accent); color:#fff; border:0; padding:7px 18px; border-radius:6px; font:inherit; cursor:pointer; }
+  #status { color:var(--dim); font-size:12px; min-width:180px; text-align:right; }
+  #clock { font-size:22px; font-variant-numeric:tabular-nums; color:#ffd166; background:#2b2417; border:1px solid #4a3d1e; padding:4px 14px; border-radius:8px; }
+  main { flex:1; display:flex; min-height:0; }
+  aside { width:230px; background:var(--panel); border-right:1px solid var(--line); padding:12px 0; overflow-y:auto; }
+  aside h3 { font-size:11px; color:var(--dim); letter-spacing:1px; padding:4px 16px; text-transform:uppercase; }
+  aside .file { padding:6px 16px; cursor:pointer; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  aside .file:hover { background:var(--line); }
+  aside .file.active { background:#30323c; color:var(--accent); }
+  #editor { flex:1; background:var(--bg); color:var(--text); border:0; resize:none; padding:18px 22px; font:inherit; outline:none; min-width:0; }
+  #findbar { display:none; gap:8px; padding:8px 16px; background:var(--panel); border-bottom:1px solid var(--line); align-items:center; }
+  #findbar.open { display:flex; }
+  #findbar input { background:var(--bg); border:1px solid var(--line); color:var(--text); padding:5px 10px; border-radius:6px; font:inherit; width:260px; }
+  #findbar button { background:var(--line); color:var(--text); border:0; padding:6px 14px; border-radius:6px; font:inherit; cursor:pointer; }
+  #findbar .count { color:var(--dim); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="app">plainedit</span>
+  <input id="filename" placeholder="untitled" spellcheck="false">
+  <button id="save">Save</button>
+  <span id="status"></span>
+  <span id="clock">00:00</span>
+</header>
+<div id="findbar">
+  <input id="find" placeholder="Find" spellcheck="false">
+  <input id="replace" placeholder="Replace with" spellcheck="false">
+  <button id="replaceAll">Replace all</button>
+  <span class="count" id="findCount"></span>
+</div>
+<main>
+  <aside>
+    <h3>Files</h3>
+    <div id="tree"></div>
+  </aside>
+  <textarea id="editor" spellcheck="false"></textarea>
+</main>
+<script>
+  const files = {};           // name -> content (workspace state)
+  const tree = document.getElementById('tree');
+  const editor = document.getElementById('editor');
+  const filename = document.getElementById('filename');
+  const status = document.getElementById('status');
+
+  function renderTree(active) {
+    tree.innerHTML = '';
+    Object.keys(files).forEach((name) => {
+      const el = document.createElement('div');
+      el.className = 'file' + (name === active ? ' active' : '');
+      el.textContent = name;
+      el.onclick = () => openFile(name);
+      tree.appendChild(el);
+    });
+  }
+  function openFile(name) {
+    filename.value = name;
+    editor.value = files[name] ?? '';
+    renderTree(name);
+    editor.focus();
+  }
+  window.seedFiles = (obj) => { Object.assign(files, obj); renderTree(); };
+  window.getFile = (name) => files[name];
+
+  document.getElementById('save').onclick = async () => {
+    const name = filename.value.trim();
+    files[name] = editor.value;
+    renderTree(name);
+    if (window.saveToDisk) await window.saveToDisk(name, editor.value);
+    status.textContent = 'Saved ' + name;
+    setTimeout(() => { if (status.textContent === 'Saved ' + name) status.textContent = ''; }, 3000);
+  };
+
+  // Find & replace (Cmd+F toggles)
+  const findbar = document.getElementById('findbar');
+  const find = document.getElementById('find');
+  const replace = document.getElementById('replace');
+  const findCount = document.getElementById('findCount');
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') { e.preventDefault(); findbar.classList.add('open'); find.focus(); }
+    if (e.key === 'Escape') findbar.classList.remove('open');
+  });
+  find.oninput = () => {
+    const q = find.value;
+    if (!q) { findCount.textContent = ''; return; }
+    const n = editor.value.split(q).length - 1;
+    findCount.textContent = n + ' match' + (n === 1 ? '' : 'es');
+  };
+  document.getElementById('replaceAll').onclick = () => {
+    const q = find.value;
+    if (!q) return;
+    const n = editor.value.split(q).length - 1;
+    editor.value = editor.value.split(q).join(replace.value);
+    findCount.textContent = 'replaced ' + n;
+    editor.dispatchEvent(new Event('input'));
+  };
+
+  // Stopwatch — real elapsed time, started by the recorder
+  let t0 = null;
+  window.startClock = () => {
+    t0 = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      document.getElementById('clock').textContent =
+        String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    }, 250);
+  };
+  window.elapsedMs = () => (t0 ? Date.now() - t0 : 0);
+</script>
+</body>
+</html>
