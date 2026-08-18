@@ -1,14 +1,29 @@
 /** Headless pre-flight: login → import workflow.json → activate → print form URL.
- * Idempotent: if "Client Onboarding (ep09)" exists, it is updated in place. */
+ * Idempotent: if "Client Onboarding (ep09)" exists, it is updated in place.
+ *
+ * Config, all from the environment — nothing is hard-coded:
+ *   N8N_URL       n8n base URL          (default http://localhost:5678)
+ *   N8N_USER      n8n owner email       (required)
+ *   N8N_PASSWORD  n8n owner password    (required)
+ *   EP09_DIR      this folder           (default: the folder this script is in)
+ */
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const BASE = 'http://localhost:5678';
-const DIR = '/Users/danielmester/Documents/Youtube/builds/ep09-client-onboarding';
+const BASE = process.env.N8N_URL ?? 'http://localhost:5678';
+const DIR = process.env.EP09_DIR ?? path.dirname(fileURLToPath(import.meta.url));
+
+const USER = process.env.N8N_USER;
+const PASSWORD = process.env.N8N_PASSWORD;
+if (!USER || !PASSWORD) {
+  throw new Error('Set N8N_USER and N8N_PASSWORD to your n8n owner account before running this.');
+}
 
 const login = await fetch(`${BASE}/rest/login`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ emailOrLdapLoginId: 'owner@shipsitself.local', password: 'ShipsItself2026!' }),
+  body: JSON.stringify({ emailOrLdapLoginId: USER, password: PASSWORD }),
 });
 if (!login.ok) throw new Error(`login ${login.status}: ${await login.text()}`);
 const cookie = login.headers.get('set-cookie').split(';')[0];

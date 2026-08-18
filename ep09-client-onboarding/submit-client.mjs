@@ -2,15 +2,28 @@
  * then polls the client dir until all artifacts exist.
  * Logs t0 (form interactive) / tSubmit / tDone — the episode's two clocks.
  *
- * Usage: node builds/ep09-client-onboarding/submit-client.mjs <clientIndex 0|1|2> [--fast]
+ * Usage: node submit-client.mjs <clientIndex 0|1|2> [--fast]
  *   --fast: no human typing delays (pre-flight only, not for camera timing)
+ *
+ * Config, all from the environment — nothing is hard-coded:
+ *   EP09_DIR       this folder     (default: the folder this script is in)
+ *   N8N_URL        n8n base URL    (default http://localhost:5678)
+ *   EP09_FORM_URL  the form's Production URL
+ *                  (default: N8N_URL + /form/ + the webhookId in workflow.json,
+ *                   which is what import-workflow.mjs prints)
  */
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIR = '/Users/danielmester/Documents/Youtube/builds/ep09-client-onboarding';
-const FORM_URL = 'http://localhost:5678/form/e9b00c11-2b1a-4c1d-9e21-000000000001';
+const DIR = process.env.EP09_DIR ?? path.dirname(fileURLToPath(import.meta.url));
+const BASE = process.env.N8N_URL ?? 'http://localhost:5678';
+const FORM_URL = process.env.EP09_FORM_URL ?? (() => {
+  const wf = JSON.parse(fs.readFileSync(path.join(DIR, 'workflow.json'), 'utf8'));
+  const trigger = wf.nodes.find((n) => n.type === 'n8n-nodes-base.formTrigger');
+  return `${BASE}/form/${trigger.webhookId}`;
+})();
 
 const CLIENTS = [
   {

@@ -1,0 +1,8 @@
+# n8n's local data folder. It holds the SQLite DB and encrypted credentials —
+# never commit it, even from a throwaway instance.
+.n8n/
+.cache/
+
+node_modules/
+.env
+.DS_Store
