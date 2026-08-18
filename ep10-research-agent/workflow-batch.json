@@ -1,0 +1,266 @@
+{
+  "name": "Research Agent — 20-question batch (ep10)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e1000000-0000-4000-8000-000000000010",
+      "name": "When clicking Execute",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Batch: one item per question from questions.txt. No email node downstream — by design.\nconst fs=require('fs');\nconst BASE=$env.EP10_DIR||require('path').resolve('.');\nconst qs=fs.readFileSync(BASE+'/questions.txt','utf8').trim().split('\\n').filter(Boolean);\nreturn qs.map(q=>({json:{'Research question':q,'Email the report to':'reports+batch@example.com'}}));"
+      },
+      "id": "e1000000-0000-4000-8000-000000000011",
+      "name": "feed-questions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// One run folder per question. Everything about this run lands here.\nconst fs=require('fs'),path=require('path');\nconst BASE=$env.EP10_DIR||require('path').resolve('.');\nconst id=new Date().toISOString().replace(/[:.]/g,'-')+'-'+Math.random().toString(36).slice(2,6);\nconst dir=path.join(BASE,'runs',id);\nfs.mkdirSync(path.join(dir,'cache'),{recursive:true});\nconst q=$json['Research question'],to=$json['Email the report to'];\nfs.writeFileSync(path.join(dir,'meta.json'),JSON.stringify({id,q,to}));\nreturn {json:{id,dir,q,to}};"
+      },
+      "id": "e1000000-0000-4000-8000-000000000001",
+      "name": "run-init",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Call 1: ask the model which sources it WANTS. It does not get to fetch them.\nconst fs=require('fs'),https=require('https');\nconst {id,dir,q,to}=$json;\nconst prompt='Propose up to 5 source URLs that answer: '+q+'\\nONLY from these domains: en.wikipedia.org, developer.mozilla.org, docs.python.org, datatracker.ietf.org.\\nReply with a JSON array of URLs only.';\nconst res=await new Promise((ok,er)=>{const r=https.request('https://fal.run/fal-ai/any-llm',{method:'POST',headers:{Authorization:'Key '+$env.FAL_KEY,'Content-Type':'application/json'}},s=>{let d='';s.on('data',c=>d+=c);s.on('end',()=>ok({h:s.headers,d}))});r.on('error',er);r.end(JSON.stringify({model:'meta-llama/llama-4-scout',prompt}))});\nfs.writeFileSync(dir+'/plan.json',res.d);\nfs.appendFileSync(dir+'/receipts.jsonl',JSON.stringify({call:'plan',units:res.h['x-fal-billable-units']||null,at:Date.now()})+'\\n');\nlet out=res.d;try{out=JSON.parse(res.d).output||res.d}catch(e){}\nreturn {json:{id,dir,q,to,plan:String(out)}};"
+      },
+      "id": "e1000000-0000-4000-8000-000000000002",
+      "name": "plan-call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The security line: the allowlist is enforced HERE, in code. The model never picks a fetch target.\nconst ALLOW=['en.wikipedia.org','developer.mozilla.org','docs.python.org','datatracker.ietf.org'];\nconst out=[];\nfor(const {json:j} of $input.all()){\n const found=(j.plan.match(/https?:\\/\\/[^\\s\"')\\]]+/g)||[]).map(u=>u.replace(/[.,)\\]]+$/,''));\n const host=u=>u.replace(/^https?:\\/\\//i,'').split(/[/?#]/)[0].toLowerCase();\n const urls=[...new Set(found)].filter(u=>ALLOW.includes(host(u))).slice(0,5);\n for(const url of urls) out.push({json:{id:j.id,dir:j.dir,q:j.q,to:j.to,url}});\n if(!urls.length) out.push({json:{id:j.id,dir:j.dir,q:j.q,to:j.to,url:'(none)',key:'none',status:0,dead:true}});\n}\nreturn out;"
+      },
+      "id": "e1000000-0000-4000-8000-000000000003",
+      "name": "split-urls",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// One polite GET. http->https (https.get throws on http), 15s timeout -> DEAD_URL, one redirect followed.\nconst fs=require('fs'),https=require('https');\nconst {dir,url}=$json;\nif($json.dead) return {json:$json};\nconst key=[...url].reduce((h,c)=>(h*33+c.charCodeAt(0))>>>0,5381).toString(16)+'-'+url.split('/').pop().replace(/[^\\w.-]/g,'').slice(0,40);\nconst get=u=>new Promise(ok=>{const rq=https.get(u.replace(/^http:\\/\\//i,'https://'),{headers:{'user-agent':'ships-itself-ep10-research'}},s=>{\n if([301,302,307,308].includes(s.statusCode)&&s.headers.location){s.resume();return ok({redir:s.headers.location})}\n let d='';s.on('data',c=>d+=c);s.on('end',()=>ok({code:s.statusCode,d}))});\n rq.on('error',()=>{rq.destroy();ok({code:0})});rq.setTimeout(15000,()=>{rq.destroy();ok({code:0})})});\nlet r=await get(url),redirectedTo=null;\nif(r.redir){redirectedTo=r.redir.startsWith('http')?r.redir:url.replace(/^(https?:\\/\\/[^/]+).*$/,'$1')+r.redir;r=await get(redirectedTo)}\nif(r.redir||r.code!==200) return {json:{...$json,key,status:r.code||0,redirectedTo,dead:true}};\nfs.writeFileSync(dir+'/cache/'+key+'.html',r.d);\nreturn {json:{...$json,key,status:200,redirectedTo,dead:false}};"
+      },
+      "id": "e1000000-0000-4000-8000-000000000004",
+      "name": "fetch-page",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Same-bytes rule: this exact slice is what the model reads AND what the gate checks.\nconst fs=require('fs');\nconst {dir,key,dead}=$json;\nif(dead) return {json:$json};\nlet t=fs.readFileSync(dir+'/cache/'+key+'.html','utf8');\nt=t.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ');\nt=t.replace(/<sup[^>]*class=\"[^\"]*reference[^\"]*\"[^>]*>[\\s\\S]*?<\\/sup>/gi,'');\nt=t.replace(/=\\s*\"[^\"]*\"/g,'').replace(/=\\s*'[^']*'/g,'');\nt=t.replace(/\\{\\\\displaystyle(?:[^{}]|\\{(?:[^{}]|\\{[^{}]*\\})*\\})*\\}/g,'');\nt=t.replace(/<\\/?(a|code|em|i|b|strong|span|sup|sub|abbr|cite|kbd|var|small|s|u|mark|q|time|data)\\b[^>]*>/gi,'');\nt=t.replace(/<[^>]+>/g,' ');\nt=t.replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').replace(/&quot;/g,'\"').replace(/&#39;/g,\"'\").replace(/&lt;/g,'<').replace(/&gt;/g,'>');\nt=t.replace(/\\s+/g,' ').trim().slice(0,8000);\nfs.writeFileSync(dir+'/cache/'+key+'.txt',t);\nreturn {json:{...$json,chars:t.length}};"
+      },
+      "id": "e1000000-0000-4000-8000-000000000005",
+      "name": "page-text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Call 2: answer from the fetched text only, with a verbatim quote per claim.\nconst fs=require('fs'),https=require('https');\nconst call=body=>new Promise((ok,er)=>{const r=https.request('https://fal.run/fal-ai/any-llm',{method:'POST',headers:{Authorization:'Key '+$env.FAL_KEY,'Content-Type':'application/json'}},s=>{let d='';s.on('data',c=>d+=c);s.on('end',()=>ok({h:s.headers,d}))});r.on('error',er);r.end(body)});\nconst groups={};for(const {json:s} of $input.all())(groups[s.id]=groups[s.id]||[]).push(s);\nconst out=[];\nfor(const id in groups){const g=groups[id],{dir,q,to}=g[0],live=g.filter(s=>!s.dead);\n if(!live.length){out.push({json:{id,dir,q,to,answer:'',sources:g,failed:'NO_LIVE_SOURCES'}});continue}\n const src=live.map((s,i)=>'['+(i+1)+'] '+s.url+'\\n'+fs.readFileSync(dir+'/cache/'+s.key+'.txt','utf8')).join('\\n\\n');\n const prompt='Question: '+q+'\\nSources:\\n'+src+'\\nAnswer using ONLY these sources. Every claim needs a quote of <=40 words copied EXACTLY from a source, plus that source URL. Reply JSON only: {\"claims\":[{\"claim\":\"...\",\"quote\":\"...\",\"url\":\"...\"}]}';\n const res=await call(JSON.stringify({model:'meta-llama/llama-4-scout',prompt}));\n fs.writeFileSync(dir+'/answer.json',res.d);\n fs.appendFileSync(dir+'/receipts.jsonl',JSON.stringify({call:'answer',units:res.h['x-fal-billable-units']||null,at:Date.now()})+'\\n');\n out.push({json:{id,dir,q,to,answer:res.d,sources:g.map(({url,key,status,dead})=>({url,key,status,dead}))}});}\nreturn out;"
+      },
+      "id": "e1000000-0000-4000-8000-000000000006",
+      "name": "answer-call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Tolerant parse: a broken reply becomes one visible rejected row, never a crash.\nconst out=[];\nfor(const {json:j} of $input.all()){\n let raw=j.answer;try{raw=JSON.parse(raw).output||raw}catch(e){}\n let claims=[];const m=String(raw).match(/\\{[\\s\\S]*\\}/);\n try{claims=JSON.parse(m[0]).claims||[]}catch(e){}\n if(!claims.length){out.push({json:{...j,n:0,claim:'(no parseable claims returned)',quote:'',url:'',verdict:'REJECTED',reason:j.failed||'PARSE_FAIL'}});continue}\n claims.slice(0,12).forEach((c,n)=>out.push({json:{id:j.id,dir:j.dir,q:j.q,to:j.to,n:n+1,claim:String(c.claim||''),quote:String(c.quote||''),url:String(c.url||''),sources:j.sources}}));\n}\nreturn out;"
+      },
+      "id": "e1000000-0000-4000-8000-000000000007",
+      "name": "split-claims",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1740,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// The centerpiece. Zero AI: the URL must be one we fetched, the quote must exist in those bytes.\nconst fs=require('fs');\nconst t0=Date.now(),{dir,quote,url,sources}=$json;\nif($json.verdict){fs.appendFileSync(dir+'/gate.jsonl',JSON.stringify({n:0,verdict:'REJECTED',reason:$json.reason,ms:0})+'\\n');return {json:$json};}\nconst norm=s=>s.replace(/\\[\\s*(?:\\d{1,3}|note\\s*\\d+|edit|citation needed)\\s*\\]/gi,' ').toLowerCase()\n .replace(/[\\u2018\\u2019\\u02BC]/g,\"'\").replace(/[\\u201C\\u201D]/g,'\"').replace(/[\\u2013\\u2014]/g,'-')\n .replace(/[\\u00AD\\u200B]/g,'').replace(/\\u00A0/g,' ').replace(/\\s+/g,' ')\n .replace(/\\s+([,.;:!?%)\\]}])/g,'$1').replace(/([(\\[{])\\s+/g,'$1')\n .replace(/\\s+('s\\b|'\\b)/g,'$1').replace(/\\s*-\\s*/g,'-').replace(/\\b([a-z])\\s+(\\d)\\b/g,'$1$2').trim();\nconst src=(sources||[]).find(s=>s.url===url||s.url===url.replace(/\\/$/,'')||s.url+'/'===url);\nlet verdict='VERIFIED',reason='';\nif(!src){verdict='REJECTED';reason='UNKNOWN_URL'}\nelse if(src.dead){verdict='REJECTED';reason='DEAD_URL:'+src.status}\nelse if(!quote||!norm(fs.readFileSync(dir+'/cache/'+src.key+'.txt','utf8')).includes(norm(quote))){verdict='REJECTED';reason='QUOTE_NOT_FOUND'}\nconst ms=Date.now()-t0;\nfs.appendFileSync(dir+'/gate.jsonl',JSON.stringify({n:$json.n,verdict,reason,ms,url})+'\\n');\nreturn {json:{...$json,verdict,reason,ms}};"
+      },
+      "id": "e1000000-0000-4000-8000-000000000008",
+      "name": "cite-gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Report + stats. Price comes from the env var set on camera from the pricing page that day.\nconst fs=require('fs');\nconst price=Number($env.EP10_PRICE_PER_REQ);\nconst groups={};for(const {json:c} of $input.all())(groups[c.id]=groups[c.id]||[]).push(c);\nconst out=[];\nfor(const id in groups){const g=groups[id],{dir,q,to}=g[0];\n const rec=fs.readFileSync(dir+'/receipts.jsonl','utf8').trim().split('\\n').map(JSON.parse);\n const ver=g.filter(c=>c.verdict==='VERIFIED'),rej=g.filter(c=>c.verdict!=='VERIFIED');\n const byReason=rej.reduce((a,c)=>(a[c.reason||'?']=(a[c.reason||'?']||0)+1,a),{});\n const srcs=g[0].sources||[],dead=srcs.filter(s=>s.dead&&s.status>=400&&s.status<500);\n const row=c=>c.verdict==='VERIFIED'?'<li class=\"ok\">&#10004; '+c.claim+'<blockquote>\"'+c.quote+'\" &mdash; <a href=\"'+c.url+'\">'+c.url+'</a></blockquote></li>':'<li class=\"no\"><s>'+c.claim+'</s> <b>['+c.reason+']</b></li>';\n const html='<div class=\"ribbon\">SAMPLE &middot; DEMO DATA &middot; BUILT ON CAMERA</div><h1>'+q+'</h1><ol>'+g.map(row).join('')+'</ol><p>'+ver.length+' verified &middot; '+rej.length+' rejected &middot; '+dead.length+' source(s) the model invented &middot; '+rec.length+' API calls &middot; $'+(rec.length*price).toFixed(3)+'</p>'+(dead.length?'<p class=\"no\">Proposed but never existed: '+dead.map(s=>s.url).join(', ')+'</p>':'');\n fs.writeFileSync(dir+'/report.html','<style>body{font-family:sans-serif;max-width:720px;margin:2em auto}.ok{color:#060}.no{color:#b00}.ribbon{background:#c00;color:#fff;padding:6px;text-align:center;font-weight:bold}</style>'+html);\n fs.writeFileSync(dir+'/stats.json',JSON.stringify({id,q,claims:g.length,verified:ver.length,rejected:rej.length,byReason,sources:srcs.length,deadSources:dead.length,deadUrls:dead.map(s=>s.url+' ['+s.status+']'),calls:rec.length,cost:rec.length*price},null,1));\n out.push({json:{id,q,to,subject:('Verified research: '+q).slice(0,78),html,verified:ver.length,rejected:rej.length}});}\nreturn out;"
+      },
+      "id": "e1000000-0000-4000-8000-000000000009",
+      "name": "report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking Execute": {
+      "main": [
+        [
+          {
+            "node": "feed-questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "feed-questions": {
+      "main": [
+        [
+          {
+            "node": "run-init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "run-init": {
+      "main": [
+        [
+          {
+            "node": "plan-call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "plan-call": {
+      "main": [
+        [
+          {
+            "node": "split-urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "split-urls": {
+      "main": [
+        [
+          {
+            "node": "fetch-page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fetch-page": {
+      "main": [
+        [
+          {
+            "node": "page-text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "page-text": {
+      "main": [
+        [
+          {
+            "node": "answer-call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "answer-call": {
+      "main": [
+        [
+          {
+            "node": "split-claims",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "split-claims": {
+      "main": [
+        [
+          {
+            "node": "cite-gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cite-gate": {
+      "main": [
+        [
+          {
+            "node": "report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

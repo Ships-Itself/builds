@@ -23,6 +23,7 @@ n8n execution log, or a provider's own billing page.
 | [**EP06** — $0 booking page](ep06-zero-calendly/) | Hosted form, code gatekeeper, real `.ics` invites, no double-bookings | **85s** blank canvas → published page · $0 vs $10/seat/mo | [watch](https://www.youtube.com/watch?v=qq7HJG5JAV0) |
 | [**EP07** — Lead-qualifying agent](ep07-lead-qualifier/) | Scores inbound leads against your ICP; no receipt, no verdict | 40 leads in **36s** · 14 hot / 11 nurture / 13 out / 2 review · $0.001 each | [watch](https://www.youtube.com/watch?v=pBT-4pQ2ayk) |
 | [**EP09** — Client onboarding](ep09-client-onboarding/) | One intake form writes the folder, docs, contract, invite and CRM row | 2m58s by hand → **17s** · 2 ms of machine time · $0 | [watch](https://www.youtube.com/watch?v=RzXBWCqHFRg) (from Aug 20) |
+| [**EP10** — Research agent with a citation gate](ep10-research-agent/) | Every claim carries a quote and a link, and plain code checks both before the report goes out | 20 questions → 53 claims · **45 verified / 8 rejected** · 37 calls · $0.037 | [watch](https://www.youtube.com/watch?v=64Der2HKRzM) (from Aug 21) |
 
 EP08 is the odd one out — a failure retrospective with no new build. See
 [What broke](#ep08--what-broke) at the bottom.

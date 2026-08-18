@@ -1,0 +1,20 @@
+What does HTTP status code 418 mean?
+When was Python 3.0 first released?
+What does the CSS z-index property control?
+Which RFC defines the semantics of HTTP/1.1?
+What is the Doppler effect?
+What does the HTTP 429 status code indicate?
+What is the difference between let and var in JavaScript?
+When was the Python 2 series officially end-of-lifed?
+What does the CSS box-sizing property do?
+Which RFC first defined the JSON data interchange format?
+What is the Coriolis effect?
+What does HTTP status code 451 signify?
+What does the JavaScript Array.prototype.flat method do?
+Which Python version introduced f-strings?
+What does the CSS position sticky value do?
+What is the purpose of the HTTP ETag header?
+What is photosynthesis?
+Which RFC defines the WebSocket protocol?
+What does the JavaScript Promise.allSettled method return?
+When was the first version of the Linux kernel released?

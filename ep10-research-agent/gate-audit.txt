@@ -1,0 +1,19 @@
+CITATION GATE AUDIT
+
+Rejections examined            18
+Quotes actually in the source  12
+Genuine model fabrications     6
+
+The gate rejected them because our HTML-to-text step corrupted the page
+before the comparison ran. The model had copied correctly.
+
+ADVERSARIAL CHECK (the fix must still reject these):
+  verbatim control        PASS  (correct)
+  digit changed           REJECT (correct)
+  negation inserted       REJECT (correct)
+  word dropped            REJECT (correct)
+  noun swapped            REJECT (correct)
+  number scaled           REJECT (correct)
+  invented sentence       REJECT (correct)
+
+guard failures: 0

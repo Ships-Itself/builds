@@ -1,0 +1,16 @@
+{
+ "questions": 20,
+ "claims": 53,
+ "verified": 45,
+ "rejected": 8,
+ "byReason": {
+  "NO_LIVE_SOURCES": 3,
+  "QUOTE_NOT_FOUND": 5
+ },
+ "sources": 57,
+ "deadSources": 8,
+ "calls": 37,
+ "cost": 0.037,
+ "costPerQuestion": 0.0019,
+ "costPerVerifiedClaim": 0.0008
+}
