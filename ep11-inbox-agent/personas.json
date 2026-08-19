@@ -1,0 +1,119 @@
+{
+  "_note": "Twelve fictional senders for the EP11 corpus. Nobody here is real. Every address is on an RFC 2606 reserved name, which is permanently undelegated and can never resolve to a mailbox, so a bug cannot mail a stranger because there is no stranger to mail. This file is the single source of the address policy: scripts/ep11-make-workflows.mjs and scripts/ep11-seed.py both read allowed_domains / allowed_tlds from here, and both refuse to widen it beyond the hard-coded RFC 2606 set.",
+  "_policy": "allowed_domains and allowed_tlds are checked against a hard-coded RFC 2606 list in both scripts. Adding a real domain here does not unlock it — it fails the build.",
+  "allowed_domains": ["example.com", "example.net", "example.org"],
+  "allowed_tlds": ["example", "test", "invalid"],
+  "operator": "you@example.com",
+  "operator_plus_tags": ["inbox", "rehearsal"],
+  "personas": [
+    {
+      "id": "ortiz",
+      "name": "Maya Ortiz",
+      "email": "maya.ortiz@example.com",
+      "org": "Riverbend Dental",
+      "role": "practice manager",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "levi",
+      "name": "Tomer Levi",
+      "email": "tomer.levi@example.net",
+      "org": "Levi Bookkeeping",
+      "role": "owner",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "raman",
+      "name": "Priya Raman",
+      "email": "priya.raman@example.org",
+      "org": "Halden Studio",
+      "role": "operations lead",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "whitfield",
+      "name": "Sam Whitfield",
+      "email": "sam.whitfield@example.com",
+      "org": "Coastline Freight",
+      "role": "dispatch supervisor",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "beck",
+      "name": "Nora Beck",
+      "email": "nora.beck@example.net",
+      "org": "Beck Physiotherapy",
+      "role": "clinic owner",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "kral",
+      "name": "Ivan Kral",
+      "email": "ivan.kral@example.org",
+      "org": "Kral Metalwork",
+      "role": "director",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "odum",
+      "name": "Grace Odum",
+      "email": "grace.odum@example.com",
+      "org": "Odum Growth Partners",
+      "role": "partner",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "mendes",
+      "name": "Hugo Mendes",
+      "email": "hugo.mendes@example.net",
+      "org": "Mendes Roasters",
+      "role": "founder",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "ferreira",
+      "name": "Ana Ferreira",
+      "email": "ana.ferreira@example.org",
+      "org": "Ferreira Tiling",
+      "role": "office administrator",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "blackwood",
+      "name": "Owen Blackwood",
+      "email": "owen.blackwood@example.com",
+      "org": "Blackwood Fitness",
+      "role": "coach",
+      "kind": "human",
+      "name_checked": false
+    },
+    {
+      "id": "listbot",
+      "name": "The Ops Weekly",
+      "email": "newsletter@list.example.org",
+      "org": "The Ops Weekly",
+      "role": "bulk sender",
+      "kind": "system",
+      "name_checked": false
+    },
+    {
+      "id": "noreply",
+      "name": "Ledgerly Notifications",
+      "email": "no-reply@notices.example.net",
+      "aliases": ["mailer-daemon@notices.example.net"],
+      "org": "Ledgerly",
+      "role": "transactional sender",
+      "kind": "system",
+      "name_checked": false
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+EP11 SEND-GATE AUDIT
+
+Every line counted below was written on or after 2026-08-18T12:58:19.329Z, when the
+rehearsal artifacts were rotated into runs/. Nothing from before the take is in it.
+
+THE CORPUS — written by me, appended to my own mailbox in two phases
+Seeded count                   18
+Seeded phase a                 17
+Seeded phase b                 1
+Messages fetched first         1
+Messages fetched               18
+
+The first listen ran with "Fetch Only New Emails" on, which pushes SINCE <today>
+onto the IMAP search. The backdated messages did not match a date-granular SINCE.
+The second listen ran with it off and asked for the whole box.
+
+THE CHAIN — one pass over the corpus, with the gate as it ships
+Notices prefiltered            4
+Drafts attempted               6
+Drafts cleared                 6
+Drafts blocked                 0
+Near misses                    0
+Near misses right              0
+
+Prefiltered messages never cost a model call. Drafts attempted are the items that
+reached the model with a sendable category (BOOKING, SUPPORT); attempted is
+cleared plus blocked. Near misses are drafts refused only for citing something the
+source does not support, and Near misses right is the adjudicated subset of them.
+
+BLOCKED BY RULE — counts only, never percentages, on a corpus this size
+CATEGORY_NOT_SENDABLE          8
+LOW_CONFIDENCE                 0
+NO_FACTS_CITED                 0
+FACT_NOT_IN_KB                 0
+FACT_NOT_QUOTABLE              0
+UNSUPPORTED_TOKEN              0
+RECIPIENT_MISMATCH             0
+ALREADY_REPLIED                0
+
+RECIPIENT_MISMATCH and ALREADY_REPLIED are defence-in-depth and read zero by
+design: node 5 assigns the recipient in code from the header, and node 3 reads the
+same ledger before this node does. They stay so that their silence stays visible.
+
+THE GATE, AUDITED BY HAND
+Escalations examined           0
+Correct escalations            0
+False escalations              0
+Escalations pre strip          0
+Escalations post strip         0
+
+Pre strip and post strip are two filmed runs of the same corpus: the gate typed
+without strip(), then with it. Every blocked draft was read by hand and labelled
+CORRECT (the gate was right) or FALSE (the gate was over-strict and the draft was
+fine). Both counts are reported.
+
+COST AND ARTIFACTS
+Fal calls                      37
+Gate lines                     18
+Diff bytes                     69
+Diff bytes ep10                312
+
+Fal calls are lines in receipts.jsonl, carrying 37 billable unit(s) across the
+whole take. The two byte counts are what n8n appended after the gate had already
+approved the body — Text format for EP11, html for EP10. Same feature, two payloads,
+and neither was in the body the gate ruled on.
